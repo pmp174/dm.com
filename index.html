@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>pmp174</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --glass-bg:     rgba(255,255,255,0.07);
+            --glass-border: rgba(255,255,255,0.18);
+            --inset-hi:     inset 0 1px 0 rgba(255,255,255,0.22);
+            --shadow:       0 8px 32px rgba(0,0,0,0.35);
+        }
+
+        html, body { min-height: 100vh; overflow-x: hidden; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: url('background.jpg') center/cover no-repeat fixed;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3.5rem 1.5rem 5rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,20,0.28);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Frosted glass wrapper — like the original content-wrapper */
+        .content-wrapper {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 28px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.15),
+                        0 2px 8px rgba(0,0,0,0.2);
+            padding: 2.5rem 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.8s cubic-bezier(0.23,1,0.32,1),
+                        box-shadow 0.8s cubic-bezier(0.23,1,0.32,1);
+            will-change: transform;
+        }
+
+        .content-wrapper:hover {
+            transform: scale(1.015);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.3),
+                        0 12px 32px rgba(0,0,0,0.35);
+        }
+
+        /* Mouse-tracking radial glow */
+        .content-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: radial-gradient(
+                circle 1200px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(255,255,255,0.07),
+                transparent 50%
+            );
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.23,1,0.32,1);
+            pointer-events: none;
+            border-radius: 28px;
+            filter: blur(80px);
+            will-change: opacity;
+        }
+
+        .content-wrapper:hover::before { opacity: 1; }
+
+        /* Header */
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 2.2rem;
+            animation: fadeUp .65s cubic-bezier(.23,1,.32,1) both;
+        }
+
+        .profile-pic {
+            width: 112px;
+            height: 112px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--glass-border);
+            box-shadow: var(--inset-hi), 0 8px 40px rgba(0,0,0,.5);
+            margin-bottom: 1.1rem;
+        }
+
+        .name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            line-height: 1;
+            margin-bottom: .28rem;
+            text-shadow: 0 2px 14px rgba(0,0,0,.45);
+        }
+
+        .handle {
+            font-size: .78rem;
+            color: rgba(255,255,255,.5);
+            letter-spacing: .08em;
+            margin-bottom: .85rem;
+        }
+
+        .bio {
+            font-size: .88rem;
+            color: rgba(255,255,255,.72);
+            line-height: 1.65;
+            max-width: 360px;
+        }
+
+        /* Social pills */
+        .social-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: .6rem;
+            margin-top: 1.3rem;
+            margin-bottom: 2.6rem;
+            animation: fadeUp .65s .1s cubic-bezier(.23,1,.32,1) both;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .42rem;
+            padding: .48rem 1.05rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            color: rgba(255,255,255,.9);
+            text-decoration: none;
+            font-size: .8rem;
+            font-weight: 500;
+            letter-spacing: .025em;
+            box-shadow: var(--inset-hi), 0 4px 16px rgba(0,0,0,.22);
+            transition: all .38s cubic-bezier(.34,1.56,.64,1);
+            white-space: nowrap;
+        }
+
+        .social-link svg {
+            width: 14px;
+            height: 14px;
+            opacity: .82;
+            flex-shrink: 0;
+        }
+
+        .social-link:hover {
+            background: rgba(255,255,255,.13);
+            border-color: rgba(255,255,255,.3);
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: var(--inset-hi), 0 10px 28px rgba(0,0,0,.3);
+        }
+
+        .social-link:active { transform: translateY(-1px) scale(1.01); }
+
+        /* Section label */
+        .section-label {
+            align-self: flex-start;
+            font-size: .68rem;
+            text-transform: uppercase;
+            letter-spacing: .13em;
+            color: rgba(255,255,255,.38);
+            margin-bottom: 1rem;
+            animation: fadeUp .65s .18s cubic-bezier(.23,1,.32,1) both;
+        }
+
+        /* Portfolio grid */
+        .portfolio-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .8rem;
+            animation: fadeUp .65s .22s cubic-bezier(.23,1,.32,1) both;
+        }
+
+        .card {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--inset-hi), var(--shadow);
+            text-decoration: none;
+            display: block;
+            aspect-ratio: 4/3;
+            background: rgba(255,255,255,.04);
+            transition: transform .44s cubic-bezier(.34,1.56,.64,1),
+                        box-shadow .44s cubic-bezier(.23,1,.32,1);
+        }
+
+        .card.featured {
+            grid-column: 1 / -1;
+            aspect-ratio: 16/7;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: var(--inset-hi), 0 22px 54px rgba(0,0,0,.52);
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .55s cubic-bezier(.23,1,.32,1);
+        }
+
+        .card:hover img { transform: scale(1.07); }
+
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,.62) 0%, transparent 55%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: .95rem 1.05rem;
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            line-height: 1.2;
+            margin-bottom: .18rem;
+            text-shadow: 0 1px 8px rgba(0,0,0,.6);
+        }
+
+        .card.featured .card-title { font-size: 1.3rem; }
+
+        .card-sub {
+            font-size: .7rem;
+            color: rgba(255,255,255,.58);
+            letter-spacing: .04em;
+        }
+
+        /* Empty placeholder card */
+        .card.empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+        }
+
+        .card.empty:hover { transform: none; box-shadow: var(--inset-hi), var(--shadow); }
+
+        .empty-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .5rem;
+            opacity: .28;
+        }
+
+        .empty-inner svg { width: 26px; height: 26px; }
+        .empty-inner span { font-size: .72rem; letter-spacing: .05em; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 460px) {
+            body { padding: 2.5rem 1rem 4rem; }
+            .content-wrapper { padding: 2rem 1.25rem 1.5rem; border-radius: 22px; }
+            .portfolio-grid { grid-template-columns: 1fr; }
+            .card.featured { aspect-ratio: 16/9; }
+            .card { aspect-ratio: 4/3; }
+            .name { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+<div class="content-wrapper" id="contentWrapper">
+
+    <header class="header">
+        <img src="profile.jpeg" alt="Darby" class="profile-pic">
+        <h1 class="name">Darby</h1>
+        <p class="handle">pmp174</p>
+        <p class="bio">Welcome to my humble corner of the web — a documentation of things I've made and places I've been.</p>
+
+        <div class="social-row">
+
+            <!-- YouTube: replace # with your channel URL -->
+            <a href="https://youtube.com/@your-channel" target="_blank" rel="noopener" class="social-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 9.71a8.5 8.5 0 00-.91-4.13 2.92 2.92 0 00-1.72-1A78.36 78.36 0 0012 4.27a78.45 78.45 0 00-8.34.3 2.87 2.87 0 00-1.46.74c-.9.83-1 2.25-1.1 3.45a48.29 48.29 0 000 6.48 9.55 9.55 0 00.3 2 3.14 3.14 0 00.71 1.36 2.86 2.86 0 001.49.78 45.18 45.18 0 006.5.33c3.5.05 6.57 0 10.2-.28a2.88 2.88 0 001.53-.78 2.49 2.49 0 00.61-1 10.58 10.58 0 00.52-3.4c.04-.56.04-3.94.04-4.54zM9.74 14.85V8.66l5.92 3.11c-1.66.92-3.85 1.96-5.92 3.08z"/></svg>
+                YouTube
+            </a>
+
+            <!-- Bluesky: replace with your handle -->
+            <a href="https://bsky.app/profile/your-handle.bsky.social" target="_blank" rel="noopener" class="social-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 01-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/></svg>
+                Bluesky
+            </a>
+
+            <!-- Email: replace with your address -->
+            <a href="/cdn-cgi/l/email-protection#dda4b2a89db8a5bcb0adb1b8f3beb2b0" class="social-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                Email
+            </a>
+
+            <!-- Gallery -->
+            <a href="gallery.html" class="social-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                Gallery
+            </a>
+
+        </div>
+    </header>
+
+    <p class="section-label">Portfolio</p>
+
+    <div class="portfolio-grid">
+
+        <!--
+            FEATURED CARD
+            ─────────────
+            href  → where clicking takes you (e.g. gallery.html or an external URL)
+            img src → first image of the project, e.g. gallery/Latin Union/1.jpg
+            card-title / card-sub → display text
+        -->
+        <a href="gallery.html" class="card featured">
+            <img src="gallery/Latin Union/1.jpg" alt="Latin Union"
+                 onerror="this.style.display='none'">
+            <div class="card-overlay">
+                <span class="card-title">Latin Union</span>
+                <span class="card-sub">Photography · 2025</span>
+            </div>
+        </a>
+
+        <!--
+            EXTRA CARDS — replace .empty with a real card when ready:
+
+            <a href="your-link" class="card">
+                <img src="gallery/Your Project/1.jpg" alt="...">
+                <div class="card-overlay">
+                    <span class="card-title">Project Name</span>
+                    <span class="card-sub">Category · Year</span>
+                </div>
+            </a>
+        -->
+        <a href="#" class="card empty">
+            <div class="empty-inner">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                <span>Coming Soon</span>
+            </div>
+        </a>
+
+        <a href="#" class="card empty">
+            <div class="empty-inner">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                <span>Coming Soon</span>
+            </div>
+        </a>
+
+    </div><!-- .portfolio-grid -->
+
+</div><!-- .content-wrapper -->
+</div><!-- .page -->
+
+<script>
+    const cw = document.getElementById('contentWrapper');
+    cw.addEventListener('mousemove', e => {
+        const r = cw.getBoundingClientRect();
+        cw.style.setProperty('--mouse-x', ((e.clientX - r.left) / r.width  * 100) + '%');
+        cw.style.setProperty('--mouse-y', ((e.clientY - r.top)  / r.height * 100) + '%');
+    });
+</script>
+</body>
+</html>
